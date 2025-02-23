@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.dongxiaohao.dao.UserDao">
+    <insert id="save">
+        insert into user_entity
+        VALUES (#{id},
+                #{userId},
+                #{name},
+                #{age},
+                #{email},
+                #{password},
+                NOW())
+    </insert>
+
+    <select id="getOne" resultType="top.dongxiaohao.entitiy.UserEntity">
+        select *
+        from user_entity
+        where user_id = #{userId}
+    </select>
+
+    <select id="getList" resultType="top.dongxiaohao.entitiy.UserEntity">
+        select *
+        from user_entity
+    </select>
+</mapper>

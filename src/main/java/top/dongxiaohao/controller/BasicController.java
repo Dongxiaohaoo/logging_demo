@@ -16,6 +16,8 @@
 
 package top.dongxiaohao.controller;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import top.dongxiaohao.entitiy.UserEntity;
@@ -24,6 +26,7 @@ import top.dongxiaohao.service.UserService;
 import top.dongxiaohao.service.impl.UserServiceImpl;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @author <a href="mailto:chenxilzx1@gmail.com">theonefx</a>
@@ -53,6 +56,11 @@ public class BasicController {
         //userRepository.save(userEntity);
         userService.save(userEntity);
         return "success";
+    }
+
+    @GetMapping("/getUser")
+    public void getUser() {
+        List<UserEntity> userEntities = userService.queryUser(new UserEntity());
     }
 
 }

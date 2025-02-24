@@ -1,14 +1,23 @@
 server:
-    port: 8080
+  port: 8080
 spring:
-    elasticsearch:
-        rest:
-            uris: http://192.168.6.228:9200
-            username: elastic
-            password: elastic
-    datasource:
-        url: jdbc:mysql://192.168.6.189:3307/demo?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
-        username: root
-        password: DONGhao123
-        type: com.alibaba.druid.pool.DruidDataSource
-        driver-class-name: com.mysql.cj.jdbc.Driver
+  elasticsearch:
+    rest:
+      uris: http://192.168.6.189:9200
+      username: elastic
+      password: elastic
+  datasource:
+    url: jdbc:mysql://192.168.6.189:3307/demo?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
+    username: root
+    password: DONGhao123
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+pagehelper:
+  params: count=countSql # 启用智能 count 优化
+
+logging:
+  level:
+    root: info
+    top.dongxiaohao: debug
+

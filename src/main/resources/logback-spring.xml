@@ -1,34 +1,75 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration debug="false">
-    <!--日志存储路径-->
-    <property name="log" value="D:/log" />
-    <!-- 控制台输出 -->
-    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <!--输出格式化-->
-            <pattern>[%X{TRACE_ID}]  %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50}[%10method,%line] - %msg%n</pattern>
-        </encoder>
-    </appender>
+<configuration debug="false" scan="true" scanPeriod="1 seconds">
+    <include resource="org/springframework/boot/logging/logback/base.xml"/>
+    <contextName>logback</contextName>
+
+    <logger name="com.ecommerce.*" level="DEBUG" />
+    <logger name="org.springframework" level="ERROR" />
+    <logger name="org.springframework.data.convert.CustomConversions" level="ERROR" />
+    <logger name="org.springframework.boot.autoconfigure" level="ERROR" />
+
+    <property name="log" value="/var/log/springboot"/>
+    <springProperty name="module.name" source="module.name" defaultValue="default" />
     <!-- 按天生成日志文件 -->
-    <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <!--日志文件名-->
-            <FileNamePattern>${log}/%d{yyyy-MM-dd}.log</FileNamePattern>
-            <!--保留天数-->
-            <MaxHistory>30</MaxHistory>
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 当前日志文件 -->
+        <file>${log}/${module.name}-current.log</file>
+        <!-- 使用 SizeAndTimeBasedRollingPolicy -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- 打包的历史日志文件名，按天滚动，并添加序号 -->
+            <fileNamePattern>${log}/${module.name}-%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <!-- 单个日志文件最大 10MB -->
+            <maxFileSize>10MB</maxFileSize>
+            <!-- 保留 60 天的日志 -->
+            <maxHistory>60</maxHistory>
+            <!-- 启用日志文件压缩 -->
+            <cleanHistoryOnStart>true</cleanHistoryOnStart>
         </rollingPolicy>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <pattern>[%X{TRACE_ID}]  %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+            <!-- 日志输出格式 -->
+            <pattern>[%X{TRACE_ID}] %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50}: %msg%n</pattern>
         </encoder>
-        <!--日志文件最大的大小-->
-        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-            <MaxFileSize>10MB</MaxFileSize>
-        </triggeringPolicy>
     </appender>
 
-    <!-- 日志输出级别 -->
-    <root level="INFO">
-        <appender-ref ref="console" />
-        <appender-ref ref="file" />
-    </root>
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <!--输出格式化-->
+            <!--<pattern>[%X{TRACE_ID}] %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50}[%10method,%line]: %msg%n</pattern>-->
+            <pattern>[%X{TRACE_ID}] %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %highlight(%-5level) %logger{50}[%10method,%line]: %msg%n</pattern>
+        </encoder>
+    </appender>
+
+
+    <!--<springProfile name="dev" activeByDefault="true" >-->
+        <root level="ERROR">
+            <appender-ref ref="CONSOLE" />
+            <appender-ref ref="FILE" />
+        </root>
+        <logger name="top.dongxiaohao" level="DEBUG" additivity="false">
+            <appender-ref ref="CONSOLE" />
+            <appender-ref ref="FILE" />
+        </logger>
+    <!--</springProfile>-->
+
+    <springProfile name="prod">
+        <root level="ERROR">
+            <appender-ref ref="CONSOLE" />
+            <appender-ref ref="FILE" />
+        </root>
+        <logger name="com.ecommerce" level="DEBUG" additivity="false">
+            <appender-ref ref="CONSOLE" />
+            <appender-ref ref="FILE" />
+        </logger>
+    </springProfile>
+
+    <springProfile name="test">
+        <root level="ERROR">
+            <appender-ref ref="CONSOLE" />
+            <appender-ref ref="FILE" />
+        </root>
+        <logger name="com.ecommerce" level="DEBUG" additivity="false">
+            <appender-ref ref="CONSOLE" />
+            <appender-ref ref="FILE" />
+        </logger>
+    </springProfile>
 </configuration>

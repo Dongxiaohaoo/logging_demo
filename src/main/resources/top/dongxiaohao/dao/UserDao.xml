@@ -23,5 +23,6 @@
     <select id="getList" resultType="top.dongxiaohao.entitiy.UserEntity">
         select *
         from user_entity
+
     </select>
 </mapper>
